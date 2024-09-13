@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Generic, TypeVar, Any
 
-V = TypeVar("V", bound=Any)
+VT = TypeVar("VT", bound=Any)
 
 
 @dataclass(frozen=True)
-class BaseValueObject(ABC, Generic[V]):
-    value: V
+class BaseValueObject(ABC, Generic[VT]):
+    value: VT
 
     def __post_init__(self) -> None:
         self.validate()
