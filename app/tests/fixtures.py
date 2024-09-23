@@ -1,6 +1,8 @@
 from punq import Container, Scope
 
-from infrastructure.repositories.messages import BaseChatRepository, MemoryChatRepository
+from infrastructure.repositories.messages.base import BaseChatRepository
+from infrastructure.repositories.messages.memory import MemoryChatRepository
+
 from logic.init import _init_container
 
 
