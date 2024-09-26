@@ -1,8 +1,12 @@
-from pydantic import Field
+import os
+
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+
+load_dotenv()
 
 
 class Config(BaseSettings):
-    mongodb_connection_uri: str = Field(default="mongodb://localhost:27017", alias="MONGODB_CONNECTION_URI")  # TODO: remove default
-    mongodb_chat_database: str = Field(default="chat", alias="MONGODB_CHAT_DATABASE")
-    mongodb_chat_collection: str = Field(default="chat", alias="MONGODB_CHAT_COLLECTION")
+    mongodb_connection_uri: str = os.getenv("MONGODB_CONNECTION_URI")
+    mongodb_chat_database: str = os.getenv("MONGODB_CHAT_DATABASE", "chat")
+    mongodb_chat_collection: str = os.getenv("MONGODB_CHAT_COLLECTION", "chat")
