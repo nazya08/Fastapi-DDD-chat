@@ -10,3 +10,4 @@ class Config(BaseSettings):
     mongodb_connection_uri: str = os.getenv("MONGODB_CONNECTION_URI")
     mongodb_chat_database: str = os.getenv("MONGODB_CHAT_DATABASE", "chat")
     mongodb_chat_collection: str = os.getenv("MONGODB_CHAT_COLLECTION", "chat")
+    mongodb_messages_collection: str = os.getenv("MONGODB_MESSAGES_COLLECTION", "messages")

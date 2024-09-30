@@ -8,6 +8,7 @@ from domain.value_objects.messages import Text, Title
 @dataclass(eq=False)
 class Message(BaseEntity):
     text: Text
+    chat_id: str
 
 
 @dataclass(eq=False)
