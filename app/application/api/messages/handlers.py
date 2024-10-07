@@ -1,14 +1,16 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from punq import Container
 
+from application.api.messages.filters import GetMessagesFiltersSchema
 from application.api.messages.schemas import CreateChatResponseSchema, CreateChatRequestSchema, \
-    CreateMessageResponseSchema, CreateMessageSchema, ChatDetailSchema
+    CreateMessageResponseSchema, CreateMessageSchema, ChatDetailSchema, MessageDetailSchema, \
+    GetMessagesQueryResponseSchema
 from application.api.schemas import ErrorSchema
 from domain.exceptions.base import ApplicationException
 from logic.commands.messages import CreateChatCommand, CreateMessageCommand
 from logic.init import init_container
 from logic.mediator import Mediator
-from logic.queries.messages import GetChatDetailQuery
+from logic.queries.messages import GetChatDetailQuery, GetMessagesQuery
 
 router = APIRouter(
     tags=['Chat'],
@@ -89,3 +91,33 @@ async def get_chat_handler(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={'error': exception.message})
 
     return ChatDetailSchema.from_entity(chat=chat)
+
+
+@router.get(
+    '/{chat_id}/messages/',
+    status_code=status.HTTP_200_OK,
+    description='Get all sent messages to chat.',
+    responses={
+        status.HTTP_200_OK: {'model': GetMessagesQueryResponseSchema},
+        status.HTTP_400_BAD_REQUEST: {'model': ErrorSchema},
+    }
+)
+async def get_chat_messages_handler(
+        chat_id: str,
+        filters: GetMessagesFiltersSchema = Depends(),
+        container: Container = Depends(init_container)
+) -> GetMessagesQueryResponseSchema:
+    """Get all sent messages to chat."""
+    mediator: Mediator = container.resolve(Mediator)
+
+    try:
+        messages, count = await mediator.handle_query(GetMessagesQuery(chat_id=chat_id, filters=filters.to_infra()))
+    except ApplicationException as exception:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={'error': exception.message})
+
+    return GetMessagesQueryResponseSchema(
+        count=count,
+        limit=filters.limit,
+        offset=filters.offset,
+        items=[MessageDetailSchema.from_entity(message=message) for message in messages],
+    )

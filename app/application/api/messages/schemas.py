@@ -3,6 +3,7 @@ from typing import Iterable
 
 from pydantic import BaseModel
 
+from application.api.schemas import BaseQueryResponseSchema
 from domain.entities.messages import Chat, Message
 
 
@@ -26,6 +27,14 @@ class MessageDetailSchema(BaseModel):
     id: str
     text: str
     created_at: datetime
+
+    @classmethod
+    def from_entity(cls, message: Message) -> 'MessageDetailSchema':
+        return cls(
+            id=message.id,
+            text=message.text.as_generic_type(),
+            created_at=message.created_at
+        )
 
 
 class ChatDetailSchema(BaseModel):
@@ -56,3 +65,7 @@ class CreateMessageResponseSchema(BaseModel):
             id=message.id,
             text=message.text.as_generic_type(),
         )
+
+
+class GetMessagesQueryResponseSchema(BaseQueryResponseSchema):
+    items: list[MessageDetailSchema]
