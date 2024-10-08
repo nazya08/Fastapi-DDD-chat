@@ -3,12 +3,17 @@ EXEC = docker exec -it
 LOGS = docker logs
 ENV = --env-file .env
 APP_FILE = docker_compose/app.yaml
+MESSAGING_FILE = docker_compose/messaging.yaml
 STORAGES_FILE = docker_compose/storages.yaml
 APP_CONTAINER = main-app
 
 .PHONY: app
 app:
 	${DC} -f ${APP_FILE} ${ENV} up --build -d
+
+.PHONY: messaging
+messaging:
+	${DC} -f ${MESSAGING_FILE} ${ENV} up --build -d
 
 .PHONY: storages
 storages:
@@ -22,6 +27,10 @@ all:
 app-down:
 	${DC} -f ${APP_FILE} down
 
+.PHONY: messaging-down
+messaging-down:
+	${DC} -f ${MESSAGING_FILE} down
+
 .PHONY: storages-down
 storages-down:
 	${DC} -f ${STORAGES_FILE} down
@@ -33,6 +42,10 @@ app-shell:
 .PHONY: app-logs
 app-logs:
 	${LOGS} ${APP_CONTAINER} -f
+
+.PHONY: messaging-logs
+messaging-logs:
+	${DC} -f ${MESSAGING_FILE} logs -f
 
 .PHONY: test
 test:

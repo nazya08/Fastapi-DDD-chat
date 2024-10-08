@@ -33,7 +33,7 @@ class Mediator:
     def register_query(self, query: QT, query_handler: QueryHandler[QT, QR]):
         self.queries_map[query] = query_handler
 
-    async def handle_event(self, events: Iterable[BaseEvent]) -> Iterable[ER]:
+    async def publish(self, events: Iterable[BaseEvent]) -> Iterable[ER]:
         event_type = events.__class__
         handlers = self.events_map.get(event_type)
 
