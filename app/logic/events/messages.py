@@ -19,7 +19,7 @@ class NewChatCreatedEventHandler(EventHandler[NewChatCreatedEvent, None]):
 class NewMessageReceivedEventHandler(EventHandler[NewMessageReceivedEvent, None]):
     async def handle(self, event: NewMessageReceivedEvent) -> None:
         await self.message_broker.send_message(
-            topic=self.broker_topic,
+            topic=self.broker_topic.format(chat_id=event.chat_id),
             key=str(event.event_id).encode(),
             value=convert_event_to_broker_message(event=event)
         )

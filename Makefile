@@ -9,7 +9,7 @@ APP_CONTAINER = main-app
 
 .PHONY: app
 app:
-	${DC} -f ${APP_FILE} ${ENV} up --build -d
+	${DC} -f ${APP_FILE} -f ${MESSAGING_FILE} ${ENV} up --build -d
 
 .PHONY: messaging
 messaging:
@@ -21,11 +21,11 @@ storages:
 
 .PHONY: all
 all:
-	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} ${ENV} up --build -d
+	${DC} -f ${STORAGES_FILE} -f ${APP_FILE} -f ${MESSAGING_FILE} ${ENV} up --build -d
 
 .PHONY: app-down
 app-down:
-	${DC} -f ${APP_FILE} down
+	${DC} -f ${APP_FILE} -f ${MESSAGING_FILE} down
 
 .PHONY: messaging-down
 messaging-down:
